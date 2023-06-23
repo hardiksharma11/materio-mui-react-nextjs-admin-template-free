@@ -5,9 +5,9 @@ import { ReactNode } from 'react'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 // ** Component Import
-import Error404 from 'src/pages/404'
+import Error401 from 'src/pages/401'
 
-const ErrorPage = () => <Error404 />
+const ErrorPage = () => <Error401 />
 
 ErrorPage.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
 

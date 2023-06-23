@@ -39,7 +39,14 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 // ** Demo Imports
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
 
+// ** Axios import
+import axios from 'axios'
+import { set } from 'nprogress'
+import { CircularProgress } from '@mui/material'
+import { useAppContext } from 'src/context/AppContext'
+
 interface State {
+  username: string
   password: string
   showPassword: boolean
 }
@@ -66,8 +73,14 @@ const LoginPage = () => {
   // ** State
   const [values, setValues] = useState<State>({
     password: '',
+    username: '',
     showPassword: false
   })
+
+  // ** Context
+  const { setLoggedInUser } = useAppContext();
+
+  const [loading, setLoading] = useState<boolean>(false)
 
   // ** Hook
   const theme = useTheme()
@@ -83,6 +96,33 @@ const LoginPage = () => {
 
   const handleMouseDownPassword = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
+  }
+
+  // Adding Login functionality
+
+  const handleSubmit = async () => {
+    // console.log(values)
+    try {
+      setLoading(true);
+      const response = await axios.post('https://dummyjson.com/auth/login', {
+        username: values.username,
+        password: values.password,
+      }, {
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if(response.status === 200) {
+        console.log(response.data);
+        localStorage.setItem('user_info', JSON.stringify(response.data));
+        setLoggedInUser(response.data);
+        router.push('/pages/user-info-form');
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      router.push('/pages/error')
+      setLoading(false);
+    }
   }
 
   return (
@@ -169,7 +209,7 @@ const LoginPage = () => {
             <Typography variant='body2'>Please sign-in to your account and start the adventure</Typography>
           </Box>
           <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
-            <TextField autoFocus fullWidth id='email' label='Email' sx={{ marginBottom: 4 }} />
+            <TextField autoFocus value={values.username} onChange={handleChange('username')} fullWidth id='username' label='Username' sx={{ marginBottom: 4 }} />
             <FormControl fullWidth>
               <InputLabel htmlFor='auth-login-password'>Password</InputLabel>
               <OutlinedInput
@@ -205,9 +245,10 @@ const LoginPage = () => {
               size='large'
               variant='contained'
               sx={{ marginBottom: 7 }}
-              onClick={() => router.push('/')}
+              onClick={handleSubmit}
+              disabled={loading}
             >
-              Login
+              {loading ? <CircularProgress size={24} color="inherit" /> : 'Login'}
             </Button>
             <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
               <Typography variant='body2' sx={{ marginRight: 2 }}>
