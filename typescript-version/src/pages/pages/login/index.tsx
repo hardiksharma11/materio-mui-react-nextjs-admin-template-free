@@ -41,7 +41,6 @@ import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
 
 // ** Axios import
 import axios from 'axios'
-import { set } from 'nprogress'
 import { CircularProgress } from '@mui/material'
 import { useAppContext } from 'src/context/AppContext'
 

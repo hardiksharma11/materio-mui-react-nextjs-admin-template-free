@@ -10,7 +10,6 @@ import MuiCard, { CardProps } from '@mui/material/Card'
 import themeConfig from 'src/configs/themeConfig'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 import FooterIllustrationsV1 from 'src/views/pages/auth/FooterIllustration'
-import { userInfo } from 'os'
 import { useAppContext } from 'src/context/AppContext'
 import ErrorPage from '../error'
 
