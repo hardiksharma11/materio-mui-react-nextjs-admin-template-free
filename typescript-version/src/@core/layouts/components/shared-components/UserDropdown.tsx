@@ -45,6 +45,7 @@ const UserDropdown = () => {
 
   const handleDropdownClose = (url?: string) => {
     if (url) {
+      localStorage.removeItem('user_info');
       router.push(url)
     }
     setAnchorEl(null)

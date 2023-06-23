@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, ElementType, ChangeEvent, SyntheticEvent } from 'react'
+import { useState, ElementType, ChangeEvent, SyntheticEvent, useEffect } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -18,8 +18,17 @@ import CardContent from '@mui/material/CardContent'
 import FormControl from '@mui/material/FormControl'
 import Button, { ButtonProps } from '@mui/material/Button'
 
+interface State {
+  username: string
+  email: string
+  firstName: string
+  lastName: string
+  gender: string
+}
+
 // ** Icons Imports
 import Close from 'mdi-material-ui/Close'
+import { useAppContext } from 'src/context/AppContext'
 
 const ImgStyled = styled('img')(({ theme }) => ({
   width: 120,
@@ -49,6 +58,27 @@ const TabAccount = () => {
   // ** State
   const [openAlert, setOpenAlert] = useState<boolean>(true)
   const [imgSrc, setImgSrc] = useState<string>('/images/avatars/1.png')
+
+  //**Context
+  const { loggedInUser } = useAppContext();
+
+  const [values, setValues] = useState<State>({
+    username: 'johnDoe',
+    email: 'johnDoe@mail.com',
+    firstName: 'John',
+    lastName: 'Doe',
+    gender: ''
+  })
+
+  const handleChange = (prop: keyof State) => (event: ChangeEvent<HTMLInputElement>) => {
+    setValues({ ...values, [prop]: event.target.value })
+  }
+
+  useEffect(() => {
+    if (loggedInUser) {
+      setValues(loggedInUser)
+    }
+  }, []);
 
   const onChange = (file: ChangeEvent) => {
     const reader = new FileReader()
@@ -89,18 +119,19 @@ const TabAccount = () => {
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='Username' placeholder='johnDoe' defaultValue='johnDoe' />
+            <TextField fullWidth label='Username' onChange={handleChange('username')} placeholder={values.username} value={values.username} />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField fullWidth label='Name' placeholder='John Doe' defaultValue='John Doe' />
+            <TextField fullWidth label='Name' onChange={handleChange('firstName')} placeholder={`${values.firstName}`} value={`${values.firstName}`} />
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
+              onChange={handleChange('email')}
               type='email'
               label='Email'
-              placeholder='johnDoe@example.com'
-              defaultValue='johnDoe@example.com'
+              placeholder={values.email}
+              value={values.email}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
